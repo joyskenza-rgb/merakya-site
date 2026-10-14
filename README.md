@@ -2,7 +2,8 @@
 
 ## Structure
 - `index.html`, `assets/` – compiled storefront (Vite/React)
-- `api/` – Vercel serverless functions (Node 18+)
+- `api/router.js` – the **only** Vercel Serverless Function (Hobby plan limit is 12). `vercel.json` rewrites every `/api/<route>` to it; handlers live in `api/_routes/` and shared code in `api/_lib/` (folders starting with `_` are not deployed as separate functions). To add an endpoint: create it in `api/_routes/` and register it in the `ROUTES` map of `api/router.js`.
+- Routes (same public URLs as before):
   - `stripe-config` – publishable key for the front end
   - `create-checkout-session` – Stripe Checkout for card orders
   - `create-payment-intent` – admin-panel Stripe test
@@ -17,7 +18,7 @@ Vercel installs `stripe` from `package.json` automatically.
 
 ## BMCE landing page — merakyalab.com/BMCE
 - Page: `bmce/index.html` (images in `bmce/img/`). `/BMCE`, `/bmce`, `/Bmce` all work.
-- API: `api/bmce/*` — `coupon` (BIN check + unique code by email), `validate` (code at checkout), `order` (COD / Stripe), `confirm` (Stripe return), `catalog`, `admin` (CSV export).
+- API: `api/_routes/bmce/*` (served at `/api/bmce/*`) — `coupon` (BIN check + unique code by email), `validate` (code at checkout), `order` (COD / Stripe), `confirm` (Stripe return), `catalog`, `admin` (CSV export).
 - **Catalogue, prices and stock:** `api/_lib/catalog.js` (one file). `stock: null` = not counted yet (unlimited); set a number to enforce it — units sold on /BMCE are deducted automatically. `available: false` = "À venir" (no buy button). After editing, run `node tools/sync-catalog.mjs` to refresh the page's offline copy.
 - **BIN list:** `api/_lib/bmce.js` → `BMCE_BINS`.
 - **Coupon rules:** one active code per e-mail, valid 30 days, single use, tied to that e-mail. Re-requesting while a code is active re-sends the same code. New code allowed once the previous one is used or expired.
