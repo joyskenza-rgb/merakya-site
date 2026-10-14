@@ -15,6 +15,14 @@
 Import the repo in Vercel: Framework Preset = **Other**, Build Command = *(empty)*, Output Directory = `.`
 Vercel installs `stripe` from `package.json` automatically.
 
+## BMCE landing page — merakyalab.com/BMCE
+- Page: `bmce/index.html` (images in `bmce/img/`). `/BMCE`, `/bmce`, `/Bmce` all work.
+- API: `api/bmce/*` — `coupon` (BIN check + unique code by email), `validate` (code at checkout), `order` (COD / Stripe), `confirm` (Stripe return), `catalog`, `admin` (CSV export).
+- **Catalogue, prices and stock:** `api/_lib/catalog.js` (one file). `stock: null` = not counted yet (unlimited); set a number to enforce it — units sold on /BMCE are deducted automatically. `available: false` = "À venir" (no buy button). After editing, run `node tools/sync-catalog.mjs` to refresh the page's offline copy.
+- **BIN list:** `api/_lib/bmce.js` → `BMCE_BINS`.
+- **Coupon rules:** one active code per e-mail, valid 30 days, single use, tied to that e-mail. Re-requesting while a code is active re-sends the same code. New code allowed once the previous one is used or expired.
+- **Export of all codes:** `https://merakyalab.com/api/bmce/admin?key=YOUR_BMCE_ADMIN_KEY` (CSV: code, e-mail, status, dates, order).
+
 ## Environment variables (Vercel → Settings → Environment Variables)
 | Name | Required | Value |
 |---|---|---|
@@ -22,6 +30,10 @@ Vercel installs `stripe` from `package.json` automatically.
 | `RESEND_API_KEY` | yes | `re_…` (resend.com → API Keys) |
 | `MAIL_FROM` | after domain verified | `MERAKYA <contact@merakyalab.app>` |
 | `STRIPE_WEBHOOK_SECRET` | recommended | `whsec_…` (see below) |
+| `KV_REST_API_URL` + `KV_REST_API_TOKEN` | yes (BMCE) | added automatically when you connect **Upstash Redis** (Vercel → Storage → Marketplace → Upstash → Redis → connect to this project). `UPSTASH_REDIS_REST_URL/TOKEN` also accepted |
+| `BMCE_ADMIN_KEY` | recommended | any long secret phrase — protects the CSV export |
+| `BMCE_NOTIFY_OWNER` | optional | set to `0` to stop the "code émis" e-mail you receive for each new code |
+| `SITE_URL` | recommended | `https://merakyalab.com` (used in e-mail links) |
 | `ORDER_NOTIFICATION_EMAIL` | optional | defaults to `joys.kenza@gmail.com` |
 | `VITE_STRIPE_PUBLIC_KEY` | optional | the live `pk_live_…` key is already built in |
 
