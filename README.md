@@ -29,7 +29,7 @@ Vercel installs `stripe` from `package.json` automatically.
 |---|---|---|
 | `STRIPE_SECRET_KEY` | yes | `sk_live_…` (Stripe → Developers → API keys) |
 | `RESEND_API_KEY` | yes | `re_…` (resend.com → API Keys) |
-| `MAIL_FROM` | after domain verified | `MERAKYA <contact@merakyalab.app>` |
+| `RESEND_FROM_EMAIL` | optional | sender address; defaults to `Merakya <offres@merakyalab.app>` (`MAIL_FROM` also accepted) |
 | `STRIPE_WEBHOOK_SECRET` | recommended | `whsec_…` (see below) |
 | `KV_REST_API_URL` + `KV_REST_API_TOKEN` | yes (BMCE) | added automatically when you connect **Upstash Redis** (Vercel → Storage → Marketplace → Upstash → Redis → connect to this project). `UPSTASH_REDIS_REST_URL/TOKEN` also accepted |
 | `BMCE_ADMIN_KEY` | recommended | any long secret phrase — protects the CSV export |
